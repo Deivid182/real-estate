@@ -1,0 +1,33 @@
+.form {
+  p {
+    font-size: 1.4rem;
+    color: $darkGray;
+    margin: 2rem 0 0 0;
+  }
+  legend {
+    font-size: 2rem;
+    padding: 0 1rem;
+  }
+  label {
+    display: block;
+    font-weight: $bold;
+    text-transform: uppercase;
+  }
+  input:not([type="radio"]), textarea, select {
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border: 1px solid $gray;
+    border-radius: .5rem;
+    font-size: 1.6rem;
+  }
+  .contact-options {
+    max-width: 30rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  button {
+    margin-left: auto;
+  }
+}

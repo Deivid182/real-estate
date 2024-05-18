@@ -1,0 +1,14 @@
+.alert {
+  padding: 1rem;
+  color: $white;
+  margin-bottom: 2rem;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: $bold;
+  &.error {
+    background-color: $red;
+  }
+  &.success {
+    background-color: $green;
+  }
+} 

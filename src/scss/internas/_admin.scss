@@ -11,4 +11,31 @@
   &.success {
     background-color: $green;
   }
-} 
+}
+
+table.properties {
+  margin-top: 4rem;
+  width: 100%;
+  border-spacing: 0;
+  @include maxTablet {
+    overflow-x: scroll;
+    display: block;
+  }
+  thead {
+    background-color: $green;
+    width: 100%;
+    th {
+      padding: 2rem;
+      color: $white;
+    }
+  }
+  td {
+    max-width: 15rem;
+    padding: 1rem;
+  }
+  .property-image {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+}

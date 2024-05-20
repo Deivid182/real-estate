@@ -11,3 +11,10 @@
 .btn-red {
   @include btn($red, inline-block);
 }
+.btn-green-block { 
+  @include btn($green, block);
+}
+
+.btn-red-block {
+  @include btn($red, block);
+}

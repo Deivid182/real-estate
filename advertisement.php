@@ -1,33 +1,50 @@
 <?php
+$id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
+if(!$id) {
+  header('Location: /');
+}
+require 'includes/config/database.php';
+
+$db = connectDB();
+
+$query = "SELECT * FROM properties WHERE id = $id";
+$result = mysqli_query($db, $query);
+if(!$result->num_rows) {
+  header('Location: /');
+}
+$property = mysqli_fetch_assoc($result);
+
+
 require 'includes/utils.php';
 includeTemplate('header');
+
+
 ?>
 <main class="container centered-content section">
-  <h1>Houses for sale in front the forest</h1>
-  <picture>
-    <source src="/build/img/destacada.webp" type="image/webp">
-    <source src="/build/img/destacada.jpg" type="image/jpeg">
-    <img src="/build/img/destacada.jpg" alt="apartment" loading="lazy">
-  </picture>
+  <h1><?php echo $property['title']?></h1>
+  <img src="/images/<?php echo $property['image_url']?>" alt="apartment" loading="lazy">
   <div class="summary-propety ">
-    <p class="price">$ 1,000,000</p>
+    <p class="price">$<?php echo $property['price']?></p>
     <ul class="icons-features">
       <li>
         <img src="/build/img/icono_wc.svg" alt="icon wc" loading="lazy">
-        <p>3</p>
+        <p><?php echo $property['wc']?></p>
       </li>
       <li>
         <img src="/build/img/icono_estacionamiento.svg" alt="icon parking" loading="lazy">
-        <p>3</p>
+        <p><?php echo $property['parkings']?></p>
       </li>
       <li>
         <img src="/build/img/icono_dormitorio.svg" alt="icon rooms" loading="lazy">
-        <p>3</p>
+        <p><?php echo $property['rooms']?></p>
       </li>
     </ul>
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi, ea sint reiciendis, quaerat natus, minima sed doloribus sapiente a nobis similique? Repellat, debitis totam nesciunt optio iste labore! Fugiat dolores amet quibusdam eos. Cum tempore numquam aut, commodi sequi accusamus!</p>
+    <p>
+    <?php echo $property['details']?>
+    </p>
   </div>
 </main>
 <?php
 includeTemplate('footer');
+mysqli_close($db);
 ?>

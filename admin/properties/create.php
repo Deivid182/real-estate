@@ -55,14 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   }
   if (empty($errors)) {
 
-    $folderImages = "../../images";
+    $folderImages = "../../images/";
     if(!is_dir($folderImages)){
       mkdir($folderImages);
     }
     $uniqueName = md5(uniqid(rand(), true)) . "." . pathinfo($image['name'], PATHINFO_EXTENSION);
 
     move_uploaded_file($image['tmp_name'], $folderImages . "/" . $uniqueName);
-    $query = "INSERT INTO properties (title, price, image_url, details, rooms, wc, parkings, seller_id) VALUES ('$title', '$price', '$uniqueName', '$description', '$rooms', '$wc', '$parkings', '$seller_id')";
+    $query = "INSERT INTO properties (title, price, image_url, details, rooms, wc, parkings, created_at, seller_id) VALUES ('$title', '$price', '$uniqueName', '$description', $rooms, $wc, $parkings, '$created_at', $seller_id)";
     $result = mysqli_query($db, $query);
 
     if ($result) {

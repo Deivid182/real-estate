@@ -1,0 +1,17 @@
+{
+    "name": "david/real-estate",
+    "description": "Real Estate with php",
+    "type": "project",
+    "authors": [
+        {
+            "name": "davepm",
+            "email": "davidmendoza911119@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "./classes"
+        }
+    }
+}

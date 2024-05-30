@@ -1,5 +1,5 @@
 <?php
-require 'includes/utils.php';
+require 'includes/app.php';
 includeTemplate('header');
 ?>
 <main class="container centered-content section">

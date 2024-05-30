@@ -1,11 +1,12 @@
 <?php
+require '../../includes/app.php';
+// isAuth();
+
 $id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
 
 if (!$id) {
   header('Location: /admin');
 }
-
-require '../../includes/config/database.php';
 
 $db = connectDB();
 
@@ -30,7 +31,6 @@ $image =$property['image_url'];
 $seller_id = 1;
 $created_at = $property['created_at'];
 
-require '../../includes/utils.php';
 includeTemplate('header', false, false);
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {

@@ -1,12 +1,13 @@
 <?php
-require '../includes/config/database.php';
-$db = connectDB();
+require '../includes/app.php';
+// isAuth();
 
+
+$db = connectDB();
 $query = "SELECT * FROM properties";
 
 $result = mysqli_query($db, $query);
 
-require '../includes/utils.php';
 includeTemplate('header', false, false);
 
 $resultQuery = intval($_GET['success']) ?? null;

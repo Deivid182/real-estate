@@ -3,7 +3,7 @@ $id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
 if(!$id) {
   header('Location: /');
 }
-require 'includes/config/database.php';
+require 'includes/config/database.php'; 
 
 $db = connectDB();
 
@@ -15,7 +15,7 @@ if(!$result->num_rows) {
 $property = mysqli_fetch_assoc($result);
 
 
-require 'includes/utils.php';
+require 'includes/app.php';
 includeTemplate('header');
 
 

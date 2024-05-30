@@ -1,4 +1,14 @@
 <?php
+
+require "utils.php";
+require "config/database.php";
+require __DIR__ . "/../vendor/autoload.php";
 define('TEMPLATES_URL', __DIR__ . '/templates');
-define('UTILS_URL', __DIR__ . 'utils.php');
+
+use App\Property;
+$property = new Property;
+
+$db = connectDB();
+Property::setDB($db);
+
 ?>

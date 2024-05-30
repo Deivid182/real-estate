@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-require 'includes/utils.php';
+require 'includes/app.php';
 includeTemplate('header', $index = true);
 ?>
 <main class="container section">

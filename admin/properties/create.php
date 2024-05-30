@@ -1,10 +1,13 @@
 <?php
-
-require '../../includes/config/database.php';
-$db = connectDB();
-
-require '../../includes/utils.php';
+require '../../includes/app.php';
 includeTemplate('header', false, false);
+
+use App\Property;
+
+
+// isAuth();
+
+$db = connectDB();
 
 $errors = [];
 
@@ -14,28 +17,32 @@ $description = '';
 $rooms = '';
 $wc = '';
 $parkings = '';
-$image = '';
+$image_url = '';
 $seller_id = 1;
 $created_at = date('Y/m/d');
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
+  
+  $property = new Property($_POST);
+  debugCode($property);
+  
   $title = mysqli_real_escape_string($db, $_POST['title']);
   $price = mysqli_real_escape_string($db, $_POST['price']);
-  $description = mysqli_real_escape_string($db, $_POST['description']);
+  $details = mysqli_real_escape_string($db, $_POST['details']);
   $rooms = mysqli_real_escape_string($db, $_POST['rooms']);
   $wc = mysqli_real_escape_string($db, $_POST['wc']);
   $parkings = mysqli_real_escape_string($db, $_POST['parkings']);
   // echo '<pre>';
   // print_r($_FILES);
   // echo '</pre>';
-  $image = $_FILES['image'];
+  $image_url = $_FILES['image'];
   if (!$title) {
     $errors[] = 'The title is required';
   }
   if (!$price) {
     $errors[] = 'The price is required';
   }
-  if (strlen($description) < 10) {
-    $errors[] = 'The description is required';
+  if (strlen($details) < 10) {
+    $errors[] = 'The details field is required';
   }
   if (!$rooms) {
     $errors[] = 'The rooms quantity is required';
@@ -46,11 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
   if (!$parkings) {
     $errors[] = 'The parkings quantity is required';
   }
-  if (!$image['name']) {
+  if (!$image_url['name']) {
     $errors[] = 'The image is required';
   }
   $maxSize = 1024 * 1024;
-  if ($image['size'] > $maxSize) {
+  if ($image_url['size'] > $maxSize) {
     $errors[] = 'The image is too large';
   }
   if (empty($errors)) {
@@ -59,9 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     if(!is_dir($folderImages)){
       mkdir($folderImages);
     }
-    $uniqueName = md5(uniqid(rand(), true)) . "." . pathinfo($image['name'], PATHINFO_EXTENSION);
+    $uniqueName = md5(uniqid(rand(), true)) . "." . pathinfo($image_url['name'], PATHINFO_EXTENSION);
 
-    move_uploaded_file($image['tmp_name'], $folderImages . "/" . $uniqueName);
+    move_uploaded_file($image_url['tmp_name'], $folderImages . "/" . $uniqueName);
     $query = "INSERT INTO properties (title, price, image_url, details, rooms, wc, parkings, created_at, seller_id) VALUES ('$title', '$price', '$uniqueName', '$description', $rooms, $wc, $parkings, '$created_at', $seller_id)";
     $result = mysqli_query($db, $query);
 
@@ -91,11 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
       <label for="price">Price:</label>
       <input type="number" id="price" name="price" value="<?php echo $price ?? ''; ?>">
 
-      <label for="image">Image:</label>
-      <input type="file" accept="image/jpeg, image/png" id="image" name="image">
+      <label for="image-url">Image:</label>
+      <input type="file" accept="image/jpeg, image/png" id="image-url" name="image_url">
 
-      <label for="description">Description:</label>
-      <textarea name="description" id="description"><?php echo $description ?? ''; ?></textarea>
+      <label for="details">Details:</label>
+      <textarea name="details" id="details"><?php echo $details ?? ''; ?></textarea>
     </fieldset>
 
     <fieldset>

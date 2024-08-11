@@ -20,3 +20,7 @@ function debugCode($value) {
   echo "<pre>";
   exit;
 }
+// purify html
+function purify($value) {
+  return htmlspecialchars($value);
+}

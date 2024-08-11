@@ -29,17 +29,19 @@ class Property
   public $created_at;
   public $seller_id;
 
-  public static function setDB($databse)
+  protected static $errors = [];
+
+  public static function setDB($database)
   {
-    self::$db = $databse;
+    self::$db = $database;
   }
 
   public function __construct($args = [])
   {
-    $this->title = $args["title"] ?? "";
+    $this->title = $args["title"] ?? null;
     $this->details = $args["details"] ?? "";
     $this->price = $args["price"] ?? "";
-    $this->image_url = $args["image_url"] ?? "image.jpg";
+    $this->image_url = $args["image_url"] ?? "";
     $this->rooms = $args["rooms"] ?? "";
     $this->wc = $args["wc"] ?? "";
     $this->parkings = $args["parkings"] ?? "";
@@ -47,15 +49,76 @@ class Property
     $this->seller_id = $args["seller_id"] ?? 1;
   }
 
-  public function save()
+  public function save() {
+    if(!is_null($this->id)){
+      $this->update();
+      header('Location: /admin?success=2');
+    } else {
+      $this->create();
+    }
+  }
+
+  public function update() {
+    $attributes = $this->cleanData();
+    $values = [];
+    foreach($attributes as $key => $value){
+      $values[] = $key. "='". $value."'"; 
+    }
+
+    $query = "UPDATE properties SET ";
+    $query .= join(', ', $values);
+    $query .= " WHERE id = " . self::$db->escape_string($this->id) . " LIMIT 1";
+    $result = self::$db->query($query);
+
+    if($result) {
+      header('Location: /admin?success=2');
+    }
+  }
+
+  public function create()
   {
 
-    $this->cleanData();
+    $attributes = $this->cleanData();
 
-    $query = "INSERT INTO properties (title, price, image_url, details, rooms, wc, parkings, created_at, seller_id) VALUES ('$this->title', '$this->price', '$this->image_url', '$this->details', $this->rooms, $this->wc, $this->parkings, '$this->created_at', $this->seller_id)";
+    $query = " INSERT INTO properties ( ";
+    $query .= join(', ', array_keys($attributes));
+    $query .= " ) VALUES (' ";
+    $query .= join("', '", array_values($attributes));
+    $query .= " ') ";
+
 
     $result = self::$db->query($query);
-    debugCode($result);
+
+    if ($result) {
+      header('Location: /admin?success=1');
+    }
+  }
+
+  public function deleteOne() {
+    $query = "DELETE FROM properties where id = " . self::$db->escape_string($this->id) . " LIMIT 1";
+
+    $result = self::$db->query($query);
+
+    if($result) {
+      $this->deleteImage(); 
+      header('Location: /admin?success=3');
+    }
+  }
+
+  public static function findAll() {
+    $query = "SELECT * FROM properties";
+
+    $result = self::readSQL($query);
+
+    return $result;
+  }
+
+  public static function findOne($id) {
+    $query = "SELECT * FROM properties WHERE id = $id";
+
+    $res = self::readSQL($query);
+
+    return $res[0];
   }
 
   public function attributes()
@@ -76,6 +139,84 @@ class Property
     foreach($attributes as $key => $value) {
       $cleaned[$key] = self::$db->escape_string($value);
     }
-    debugCode($cleaned);
+    return $cleaned;
+  }
+
+  public function setImage($image_url) {
+    $this->deleteImage();
+
+    if($image_url) {
+      $this->image_url = $image_url;
+    }
+  }
+
+  public function deleteImage() {
+    if(!is_null($this->id) && file_exists(FOLDER_IMAGES . $this->image_url)) {
+      unlink(FOLDER_IMAGES . $this->image_url);
+    }
+  }
+
+  public static function getErrors() {
+    return self::$errors;
+  }
+
+  public function validate() {
+    if (!$this->title) {
+      self::$errors[] = 'The title is required';
+    }
+    if (!$this->price) {
+      self::$errors[] = 'The price is required';
+    }
+    if (strlen($this->details) < 10) {
+      self::$errors[] = 'The details field is required';
+    }
+    if (!$this->rooms) {
+      self::$errors[] = 'The rooms quantity is required';
+    }
+    if (!$this->wc) {
+      self::$errors[] = 'The wc quantity is required';
+    }
+    if (!$this->parkings) {
+      self::$errors[] = 'The parkings quantity is required';
+    }
+    if (!$this->image_url) {
+      self::$errors[] = 'The image is required';
+    }
+    return self::$errors;
+  }
+
+  public static function readSQL($query) {
+    // read the database
+    $res = self::$db->query($query);
+    //iterate the res
+    $array = [];
+
+    while ($row = $res->fetch_assoc()) {
+      $array[] = self::makeObject($row);
+    }
+    //clean memory
+    $res->free();
+
+    //return result
+    return $array;
+  }
+
+  protected static function makeObject($row) {
+    $object = new self();
+
+    foreach ($row as $key => $value) {
+      if(property_exists($object, $key)) {
+        $object->$key = $value;
+      }
+    }
+    return $object;
+  }
+
+  public function sync ($args = []) {
+    foreach($args as $key => $value) {
+      if(property_exists($this, $key) && !is_null($value)) {
+        $this->$key = $value;
+      }
+    }
   }
 }

@@ -14,6 +14,7 @@ $auth = $_SESSION['login'] ?? null;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EliteEstate Solutions</title>
+  <link rel="icon" href="/build/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/build/css/app.css">
 </head>
 
